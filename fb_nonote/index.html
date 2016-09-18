@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>flappy bird</title>
+</head>
+<body>
+<canvas id="canvas" width="800" height="600" style="border: 1px solid #123456;"></canvas>
+<script src="js/util.js"></script>
+<script src="js/getImages.js"></script>
+<script src="js/sky.js"></script>
+<script src="js/bird.js"></script>
+<script src="js/land.js"></script>
+<script src="js/pipe.js"></script>
+<script src="js/text.js"></script>
+<script src="js/text_date.js"></script>
+<script>
+    (function main() {
+        var canvas = document.getElementById('canvas');
+        var context = canvas.getContext('2d');
+        getImages(function (imgObj) {
+            Sky.init(canvas,context,imgObj.sky);
+            var sky = new Sky(0,0);
+            var sky2 = new Sky(imgObj.sky.width,0);
+            Bird.init(canvas,context,imgObj.bird);
+            var bird = new Bird(50,50,60,60);
+            bird.bind();
+            Land.init(canvas,context,imgObj.land);
+            var land  = new Land(0,                    canvas.height - imgObj.land.height);
+            var land2 = new Land(imgObj.land.width * 1,canvas.height - imgObj.land.height);
+            var land3 = new Land(imgObj.land.width * 2,canvas.height - imgObj.land.height);
+            var land4 = new Land(imgObj.land.width * 3,canvas.height - imgObj.land.height);
+            Pipe.init(canvas,context,imgObj.pipeUp,imgObj.pipeDown);
+            var pipe = new Pipe(292);
+            var pipe2 = new Pipe(292 + imgObj.pipeUp.width * 3);
+            var pipe3 = new Pipe(292 + imgObj.pipeUp.width * 6);
+            var pipe4 = new Pipe(292 + imgObj.pipeUp.width * 9);
+            var pipe5 = new Pipe(292 + imgObj.pipeUp.width * 12);
+            var pipe6 = new Pipe(292 + imgObj.pipeUp.width * 15);
+            var text = new Text_date({
+                canvas : canvas,
+                context : context,
+                x : canvas.width,
+                y : 0,
+                font : '800 20px "微软雅黑"',
+                color : '#123456',
+                align : 'right',
+                baseline : 'top'
+            });
+            var startTime = Date.now();
+            var timer = setInterval(function () {
+                var time = Date.now();
+                text.time = time - startTime;
+                var birdCenterX = bird.x + bird.w / 2;
+                var birdCenterY = bird.y + bird.h / 2;
+                if (birdCenterY < 0 || birdCenterY > canvas.height - imgObj.land.height ||
+                        context.isPointInPath(birdCenterX,birdCenterY)) {
+                    clearInterval(timer);
+                }
+                context.clearRect(0,0,canvas.width,canvas.height);
+                sky.draw();
+                sky.update();
+                sky2.draw();
+                sky2.update();
+                context.beginPath();
+                pipe.draw();
+                pipe.update();
+                pipe2.draw();
+                pipe2.update();
+                pipe3.draw();
+                pipe3.update();
+                pipe4.draw();
+                pipe4.update();
+                pipe5.draw();
+                pipe5.update();
+                pipe6.draw();
+                pipe6.update();
+                land.draw();
+                land.update();
+                land2.draw();
+                land2.update();
+                land3.draw();
+                land3.update();
+                land4.draw();
+                land4.update();
+                bird.draw();
+                bird.update();
+                text.drawDate();
+                context.font = '800 20px "微软雅黑"';
+                context.strokeText('立哥手写，拒绝侵权®',0,20);
+            },1000 / 60);
+        });
+    })();
+</script>
+</body>
+</html>
